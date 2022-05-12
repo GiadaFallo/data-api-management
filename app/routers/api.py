@@ -2,7 +2,7 @@ from typing import Optional
 from datetime import datetime
 from pydantic import BaseModel
 from fastapi import APIRouter
-from app.models.storage import CustomerInput
+from app.models.storage import CustomerInput, storage
 
 router = APIRouter()
 
@@ -24,7 +24,8 @@ async def send_message(customer_id: int, dialog_id: int, message: Message):
     """
         This endpoint push each customer input during his/her dialogue with the chatbot
     """
-    pass
+    dialog = storage.create_if_not_exist(customer_id, dialog_id)
+    dialog.data.append(message.to_customer_input())
 
 
 @router.post("/consents/{dialog_id}", status_code=201)
