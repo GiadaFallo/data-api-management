@@ -1,7 +1,8 @@
 from typing import Optional
 from datetime import datetime
 from pydantic import BaseModel
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
+from app.database import database
 from app.models.storage import CustomerInput, storage
 
 router = APIRouter()
@@ -36,7 +37,14 @@ async def send_consent(dialog_id: int, consents: Consents):
         If false customer's data stored in-memory will be deleted
         If true customer's data will be stored in the database and deleted from the in-memory storage
     """
-    pass
+    customer_dialog = storage.get(dialog_id)
+    if customer_dialog is None:
+        raise HTTPException(status_code=404, detail="Item not found")
+
+    if consents.value:
+        database.store_data(customer_dialog)
+
+    storage.delete(dialog_id)
 
 
 @router.get("/data/")
