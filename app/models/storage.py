@@ -26,4 +26,11 @@ class CustomerDialogStorage:
  
         return self.storage[dialog_id]
 
+    def get(self, dialog_id: int) -> (CustomerDialog | None):
+        return self.storage.get(dialog_id)
+
+    def delete(self, dialog_id):
+        return self.storage.pop(dialog_id)
+
+
 storage = CustomerDialogStorage()
