@@ -28,8 +28,7 @@ class Database:
         self.customer_dialogs_collection = self.db[collection_name]
 
     def store_data(self, customer_dialog: CustomerDialog):
-        self.customer_dialogs_collection\
-            .insert_one(asdict(customer_dialog))
+        self.customer_dialogs_collection.insert_one(asdict(customer_dialog))
 
     def read_data(self, language=None, customer_id=None, skip=0, limit=10) -> List[Result]:
 
@@ -43,10 +42,8 @@ class Database:
         final_condition = {'$and': conditions} if len(conditions) > 0 else {}
 
         cursor = self.customer_dialogs_collection.aggregate(
-            [{"$unwind": "$data"}, {"$match": final_condition}, {"$sort": {"data.timestamp": -1}},
-             {"$skip": skip}, {"$limit": limit}])
-             
-        return [convert(doc) for doc in cursor]
+            [{"$unwind": "$data"}, {"$match": final_condition}, {"$sort": {"data.timestamp": -1}}, {"$skip": skip}, {"$limit": limit}])
 
+        return list(map(convert, cursor))
 
 database = Database(settings.db_url, "chat", "customer_dialogs")
