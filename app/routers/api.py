@@ -29,7 +29,7 @@ async def send_message(customer_id: int, dialog_id: int, message: Message):
     dialog.data.append(message.to_customer_input())
 
 
-@router.post("/consents/{dialog_id}", status_code=201)
+@router.post("/consents/{dialog_id}", status_code=200)
 async def send_consent(dialog_id: int, consents: Consents):
     """
         This endpoint is called at the end of the dialogue when the customer is asked if he/she gives consent
@@ -40,7 +40,6 @@ async def send_consent(dialog_id: int, consents: Consents):
     customer_dialog = storage.get(dialog_id)
     if customer_dialog is None:
         raise HTTPException(status_code=404, detail="Item not found")
-
     if consents.value:
         database.store_data(customer_dialog)
 
