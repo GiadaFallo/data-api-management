@@ -48,7 +48,7 @@ async def send_consent(dialog_id: int, consents: Consents):
 
 
 @router.get("/data/")
-async def get_data(language: Optional[str] = None, customer_id: Optional[int] = None, page_number: int = 0, n_per_page: int = 0,
+async def get_data(language: Optional[str] = None, customer_id: Optional[int] = None, skip: int = 0, limit: int = 10,
                    response_description="List all datapoints"):
     """
         Retrieve data to improve the chatbot it returns all the datapoints:
@@ -56,4 +56,4 @@ async def get_data(language: Optional[str] = None, customer_id: Optional[int] = 
             * for which we have consent for
             * data are sorted by most recent data first and with pagination
         """
-    pass
+    return database.read_data(language, customer_id, skip, limit)
